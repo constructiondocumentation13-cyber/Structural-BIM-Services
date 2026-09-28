@@ -1,1 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Point Cloud to Revit: Accelerating As-Built Documentation for Renovation</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            accent: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              200: '#fecaca',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f8fafc;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #e2e8f0;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #cbd5e1;
+    }
+    /* Subtle dot grid for drafting/engineering paper look */
+    .bg-draft-pattern {
+      background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .glass-header {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-white text-neutral-800 font-sans antialiased selection:bg-red-100 selection:text-red-900 relative">
 
+  <!-- Reading Progress Bar -->
+  <div id="progress-container" class="fixed top-0 left-0 w-full h-1 z-50 bg-neutral-900">
+    <div id="progress-bar" class="h-full bg-gradient-to-r from-red-600 to-red-500 w-0 transition-all duration-150"></div>
+  </div>
+
+  <!-- Top Navigation Bar (Structural BIM Brand Header) -->
+  <header class="sticky top-0 z-40 w-full bg-black border-b-2 border-red-600 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center space-x-3 group">
+        <!-- 3-Cube Isometric Red Icon -->
+        <svg class="w-8 h-8 sm:w-9 sm:h-9 shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Top Cube -->
+          <g>
+            <!-- Top Face -->
+            <polygon points="50,14 68,24 50,34 32,24" fill="#ff4d4d"/>
+            <!-- Left Face -->
+            <polygon points="32,24 50,34 50,54 32,44" fill="#dc2626"/>
+            <!-- Right Face -->
+            <polygon points="50,34 68,24 68,44 50,54" fill="#b91c1c"/>
+          </g>
+          <!-- Bottom Left Cube -->
+          <g>
+            <!-- Top Face -->
+            <polygon points="30,46 48,56 30,66 12,56" fill="#ff4d4d"/>
+            <!-- Left Face -->
+            <polygon points="12,56 30,66 30,86 12,76" fill="#dc2626"/>
+            <!-- Right Face -->
+            <polygon points="30,66 48,56 48,76 30,86" fill="#b91c1c"/>
+          </g>
+          <!-- Bottom Right Cube -->
+          <g>
+            <!-- Top Face -->
+            <polygon points="70,46 88,56 70,66 52,56" fill="#ff4d4d"/>
+            <!-- Left Face -->
+            <polygon points="52,56 70,66 70,86 52,76" fill="#dc2626"/>
+            <!-- Right Face -->
+            <polygon points="70,66 88,56 88,76 70,86" fill="#b91c1c"/>
+          </g>
+        </svg>
+
+        <!-- Brand Text: STRUCTURAL in white, BIM in red -->
+        <div class="flex items-center text-xl sm:text-2xl font-black tracking-tight select-none">
+          <span class="text-white">STRUCTURAL</span><span class="text-red-600">BIM</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="flex items-center space-x-6 sm:space-x-8 text-xs sm:text-sm font-bold tracking-wider uppercase">
+        <a href="#" class="text-white hover:text-red-500 transition duration-150">
+          HOME
+        </a>
+        <a href="#" class="text-red-600 border-b-2 border-red-600 pb-0.5 transition duration-150">
+          BLOG
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="relative bg-draft-pattern border-b border-neutral-200 pt-14 pb-16 lg:pt-20 lg:pb-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      
+      <!-- Main Title -->
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-neutral-950 tracking-tight leading-[1.18] mb-6">
+        Point Cloud to Revit: <br class="hidden sm:inline" />
+        <span class="text-red-600 underline decoration-red-200 decoration-wavy underline-offset-8">
+          Accelerating As-Built Documentation
+        </span> for Renovation
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="text-base sm:text-lg text-neutral-600 max-w-2xl mx-auto mb-8 leading-relaxed font-normal">
+        Eliminating site clashes and construction rework by converting high-density laser survey data into millimeter-accurate parametric BIM models.
+      </p>
+
+      <!-- Meta Information -->
+      <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs text-neutral-500 border-t border-neutral-200 pt-6 font-medium">
+        <div class="flex items-center gap-2">
+          <i class="ph ph-buildings text-red-600 text-base"></i>
+          <span>Industry: Architecture & BIM</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="ph ph-clock text-red-600 text-base"></i>
+          <span>7 Min Read</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="ph ph-crosshair text-red-600 text-base"></i>
+          <span>LOD 100 to 500 Compliance</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+      <!-- Left Column: Sticky Table of Contents -->
+      <aside class="hidden lg:block lg:col-span-3">
+        <div class="sticky top-24 p-5 rounded-xl bg-neutral-50 border border-neutral-200 shadow-sm">
+          <p class="text-xs uppercase font-mono tracking-wider text-red-700 font-bold mb-4 flex items-center gap-2">
+            <i class="ph ph-list-bullets"></i> Table of Contents
+          </p>
+          <nav class="space-y-1 text-sm font-medium">
+            <a href="#introduction" class="block text-neutral-600 hover:text-red-600 hover:translate-x-1 transition duration-150 py-1.5">1. The Digital Evolution</a>
+            <a href="#renovation-dilemma" class="block text-neutral-600 hover:text-red-600 hover:translate-x-1 transition duration-150 py-1.5">2. The Renovation Dilemma</a>
+            <a href="#technical-trends" class="block text-neutral-600 hover:text-red-600 hover:translate-x-1 transition duration-150 py-1.5">3. Key Technical Trends</a>
+            <a href="#workflow" class="block text-neutral-600 hover:text-red-600 hover:translate-x-1 transition duration-150 py-1.5">4. 4-Stage Workflow</a>
+            <a href="#sustainability" class="block text-neutral-600 hover:text-red-600 hover:translate-x-1 transition duration-150 py-1.5">5. Sustainability Impacts</a>
+            <a href="#future-roadmap" class="block text-neutral-600 hover:text-red-600 hover:translate-x-1 transition duration-150 py-1.5">6. Future Roadmap</a>
+            <a href="#conclusion" class="block text-neutral-600 hover:text-red-600 hover:translate-x-1 transition duration-150 py-1.5">7. Conclusion</a>
+          </nav>
+
+          <!-- Key Stat Box -->
+          <div class="mt-6 pt-5 border-t border-neutral-200">
+            <div class="p-3.5 rounded-lg bg-red-50/70 border border-red-200/80">
+              <span class="text-xs text-red-800 font-semibold block">Cost Overrun Factor</span>
+              <span class="text-2xl font-black text-neutral-900 font-mono mt-0.5 block">5% – 12%</span>
+              <p class="text-[11px] text-neutral-600 mt-1 leading-snug">Average project budget loss from unanticipated clashes in legacy surveys.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center & Right: Article Content -->
+      <article class="lg:col-span-9 space-y-12 max-w-none">
+
+        <!-- Introduction -->
+        <section id="introduction" class="space-y-4">
+          <p class="text-lg leading-relaxed text-neutral-700 first-letter:text-5xl first-letter:font-extrabold first-letter:text-red-600 first-letter:float-left first-letter:mr-3 first-letter:leading-none">
+            The Architecture, Engineering, and Construction (AEC) industry stands at the precipice of a major digital evolution: moving away from fragmented 2D drafting and manual field measurements toward intelligent, data-driven modeling workflows. When undertaking renovation, adaptive reuse, or historic restoration projects, relying on outdated as-built blueprints poses severe risks of schedule delays, spatial clashes, and budget overruns.
+          </p>
+
+          <!-- Quote Callout -->
+          <div class="my-6 p-5 sm:p-6 rounded-xl bg-neutral-50 border-l-4 border-red-600 border border-neutral-200">
+            <p class="text-neutral-800 italic text-sm sm:text-base leading-relaxed font-serif">
+              "Converting high-definition laser scan data directly into parametric Revit models widely known as <strong class="text-red-700 font-sans not-italic font-semibold">Scan to BIM</strong> bridges the physical site with digital design. By collaborating with specialized providers like <a href="https://www.teslabimservices.com/scan-to-bim-services.php" target="_blank" rel="noopener noreferrer" class="font-sans not-italic font-bold text-neutral-950 hover:text-red-600 underline decoration-red-500 hover:decoration-red-600 transition">Tesla BIM Services</a>, project stakeholders can transform complex point cloud surveys into intelligent 3D models with high accuracy, delivering an authoritative single source of truth for the entire asset lifecycle."
+            </p>
+          </div>
+        </section>
+
+        <!-- Industry Context: The Renovation Dilemma -->
+        <section id="renovation-dilemma" class="space-y-6 pt-6 border-t border-neutral-200">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center text-white font-mono text-sm font-bold">01</span>
+            <h2 class="text-2xl font-bold text-neutral-950 tracking-tight">Industry Context: The Renovation Dilemma</h2>
+          </div>
+
+          <p class="text-neutral-700 leading-relaxed">
+            Traditional measured surveys relying on manual tape measurements, distance meters, and 2D CAD drafting are prone to human oversight. Construction teams often discover structural deflections, unmapped MEP risers, or irregular floor levels only after demolition begins. Unanticipated clashes and inaccurate site surveys typically account for <strong class="text-red-700">5% to 12%</strong> of total project cost overruns.
+          </p>
+
+          <p class="text-neutral-700 leading-relaxed">
+            Scan to BIM replaces static assumptions with millimetric precision:
+          </p>
+
+          <!-- 3 Highlight Pillars -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-5 rounded-xl bg-white border border-neutral-200 shadow-sm hover:border-red-300 transition">
+              <div class="w-10 h-10 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center text-red-600 text-xl mb-3">
+                <i class="ph ph-chart-polar"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-900 mb-1.5">High-Density Spatial Data</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Billions of coordinate points capture every inch of real-world site geometry without field guesswork.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-white border border-neutral-200 shadow-sm hover:border-red-300 transition">
+              <div class="w-10 h-10 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center text-red-600 text-xl mb-3">
+                <i class="ph ph-shield-check"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-900 mb-1.5">Risk Mitigation</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Identifying spatial conflicts early in the virtual environment prevents costly rework and change orders on site.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-white border border-neutral-200 shadow-sm hover:border-red-300 transition">
+              <div class="w-10 h-10 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center text-red-600 text-xl mb-3">
+                <i class="ph ph-git-merge"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-900 mb-1.5">Multi-Trade Integration</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Architecture, structural framing, and MEP systems are coordinated simultaneously inside a unified Revit environment.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Key Technical Trends -->
+        <section id="technical-trends" class="space-y-6 pt-6 border-t border-neutral-200">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center text-white font-mono text-sm font-bold">02</span>
+            <h2 class="text-2xl font-bold text-neutral-950 tracking-tight">Key Technical Trends</h2>
+          </div>
+
+          <div class="space-y-3">
+            <!-- Trend 1 -->
+            <div class="p-4 rounded-xl bg-neutral-50 border border-neutral-200 flex flex-col sm:flex-row sm:items-start gap-4 hover:border-neutral-300 transition">
+              <span class="px-2.5 py-1 rounded bg-neutral-900 text-white text-xs font-mono font-bold self-start mt-0.5">TLS & LiDAR</span>
+              <div>
+                <h4 class="text-neutral-950 text-sm font-bold mb-1">Terrestrial Laser Scanning (TLS) & Mobile LiDAR</h4>
+                <p class="text-xs text-neutral-600 leading-relaxed">
+                  High-speed capture devices gather dense geometric datasets formatted as <code class="text-red-700 bg-red-50 px-1 py-0.5 rounded border border-red-100 font-mono">.RCP</code>, <code class="text-red-700 bg-red-50 px-1 py-0.5 rounded border border-red-100 font-mono">.RCS</code>, <code class="text-red-700 bg-red-50 px-1 py-0.5 rounded border border-red-100 font-mono">.E57</code>, and <code class="text-red-700 bg-red-50 px-1 py-0.5 rounded border border-red-100 font-mono">.PTS</code> files for direct Revit indexing.
+                </p>
+              </div>
+            </div>
+
+            <!-- Trend 2 -->
+            <div class="p-4 rounded-xl bg-neutral-50 border border-neutral-200 flex flex-col sm:flex-row sm:items-start gap-4 hover:border-neutral-300 transition">
+              <span class="px-2.5 py-1 rounded bg-neutral-900 text-white text-xs font-mono font-bold self-start mt-0.5">LOD Scope</span>
+              <div>
+                <h4 class="text-neutral-950 text-sm font-bold mb-1">LOD 100 to LOD 500 Modeling</h4>
+                <p class="text-xs text-neutral-600 leading-relaxed">
+                  Adapting the level of development to project scope, ranging from conceptual massing (LOD 200) to accurate fabrication and facility management components (LOD 350–400+).
+                </p>
+              </div>
+            </div>
+
+            <!-- Trend 3 -->
+            <div class="p-4 rounded-xl bg-neutral-50 border border-neutral-200 flex flex-col sm:flex-row sm:items-start gap-4 hover:border-neutral-300 transition">
+              <span class="px-2.5 py-1 rounded bg-neutral-900 text-white text-xs font-mono font-bold self-start mt-0.5">AI Engine</span>
+              <div>
+                <h4 class="text-neutral-950 text-sm font-bold mb-1">Automated Feature Extraction</h4>
+                <p class="text-xs text-neutral-600 leading-relaxed">
+                  Leveraging machine-learning algorithms within point cloud software to segment planar surfaces (floors, walls) and automate initial pipe/duct tracing.
+                </p>
+              </div>
+            </div>
+
+            <!-- Trend 4 -->
+            <div class="p-4 rounded-xl bg-neutral-50 border border-neutral-200 flex flex-col sm:flex-row sm:items-start gap-4 hover:border-neutral-300 transition">
+              <span class="px-2.5 py-1 rounded bg-neutral-900 text-white text-xs font-mono font-bold self-start mt-0.5">QA Heat-Map</span>
+              <div>
+                <h4 class="text-neutral-950 text-sm font-bold mb-1">Deviation Heat-Mapping</h4>
+                <p class="text-xs text-neutral-600 leading-relaxed">
+                  Applying automated scan-vs-BIM inspection software to evaluate the parametric model against raw scan points, guaranteeing tight tolerance compliance.
+                </p>
+              </div>
+            </div>
+
+            <!-- Trend 5 -->
+            <div class="p-4 rounded-xl bg-neutral-50 border border-neutral-200 flex flex-col sm:flex-row sm:items-start gap-4 hover:border-neutral-300 transition">
+              <span class="px-2.5 py-1 rounded bg-neutral-900 text-white text-xs font-mono font-bold self-start mt-0.5">Cloud CDE</span>
+              <div>
+                <h4 class="text-neutral-950 text-sm font-bold mb-1">Cloud CDE Collaboration</h4>
+                <p class="text-xs text-neutral-600 leading-relaxed">
+                  Platforms like Autodesk Construction Cloud enable global multidisciplinary teams to share and coordinate indexed models in real time.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Engineering Deep Dive: The Point Cloud to Revit Workflow -->
+        <section id="workflow" class="space-y-6 pt-6 border-t border-neutral-200">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center text-white font-mono text-sm font-bold">03</span>
+            <div>
+              <h2 class="text-2xl font-bold text-neutral-950 tracking-tight">Engineering Deep Dive: The Point Cloud to Revit Workflow</h2>
+            </div>
+          </div>
+
+          <p class="text-neutral-700 leading-relaxed">
+            Transforming raw survey clouds into a coordinated, parametric Revit model requires a disciplined engineering sequence:
+          </p>
+
+          <!-- 4 Steps Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <!-- Stage 1 -->
+            <div class="p-5 rounded-xl bg-white border border-neutral-200 hover:border-red-400 transition shadow-sm relative group">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 font-mono text-xs font-bold border border-red-200">
+                  Step 01
+                </span>
+                <i class="ph ph-scan text-neutral-400 group-hover:text-red-600 transition text-xl"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-950 mb-1.5">Reality Capture & Scan Registration</h3>
+              <p class="text-xs font-medium text-neutral-500 mb-2">Raw point cloud processing</p>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+                The existing facility is surveyed using terrestrial laser scanners or mobile mapping units. Individual scans are filtered, indexed, and stitched together using tools like Autodesk ReCap to generate clean .RCP or .RCS coordinate files.
+              </p>
+              <div class="text-[11px] font-mono text-neutral-700 bg-neutral-50 p-2 rounded border border-neutral-200 flex items-center gap-1.5">
+                <i class="ph ph-check text-red-600 font-bold"></i> Output: Clean .RCP / .RCS Coordinate Files
+              </div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="p-5 rounded-xl bg-white border border-neutral-200 hover:border-red-400 transition shadow-sm relative group">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 font-mono text-xs font-bold border border-red-200">
+                  Step 02
+                </span>
+                <i class="ph ph-compass text-neutral-400 group-hover:text-red-600 transition text-xl"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-950 mb-1.5">Survey Base Points & Coordinate Reconciliation</h3>
+              <p class="text-xs font-medium text-neutral-500 mb-2">Preventing spatial drift</p>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+                Before linking files into Revit, project benchmarks, true north, and shared coordinates are established. Aligning the point cloud with the site datum ensures accurate positioning across architectural, structural, and MEP models.
+              </p>
+              <div class="text-[11px] font-mono text-neutral-700 bg-neutral-50 p-2 rounded border border-neutral-200 flex items-center gap-1.5">
+                <i class="ph ph-check text-red-600 font-bold"></i> Output: Shared Coordinates & Cross-Discipline Datum
+              </div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="p-5 rounded-xl bg-white border border-neutral-200 hover:border-red-400 transition shadow-sm relative group">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 font-mono text-xs font-bold border border-red-200">
+                  Step 03
+                </span>
+                <i class="ph ph-cube text-neutral-400 group-hover:text-red-600 transition text-xl"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-950 mb-1.5">Parametric Modeling & Family Extraction</h3>
+              <p class="text-xs font-medium text-neutral-500 mb-2">Translating points to intelligent elements</p>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+                Modelers slice section views and floor plans directly through the indexed point cloud. Standard building elements (slabs, columns, curtain walls) and bespoke Revit families (custom millwork, historic moldings, complex MEP fittings) are modeled to fit surveyed conditions.
+              </p>
+              <div class="text-[11px] font-mono text-neutral-700 bg-neutral-50 p-2 rounded border border-neutral-200 flex items-center gap-1.5">
+                <i class="ph ph-check text-red-600 font-bold"></i> Output: Parametric Native Revit BIM (.RVT)
+              </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="p-5 rounded-xl bg-white border border-neutral-200 hover:border-red-400 transition shadow-sm relative group">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 font-mono text-xs font-bold border border-red-200">
+                  Step 04
+                </span>
+                <i class="ph ph-shield-check text-neutral-400 group-hover:text-red-600 transition text-xl"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-950 mb-1.5">Quality Assurance & Tolerance Verification</h3>
+              <p class="text-xs font-medium text-neutral-500 mb-2">Level of Accuracy (LOA) checks</p>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+                The modeled geometry is verified against point cloud slice views and deviation analysis tools to ensure all building components strictly comply with the specified Level of Accuracy (LOA) tolerances.
+              </p>
+              <div class="text-[11px] font-mono text-neutral-700 bg-neutral-50 p-2 rounded border border-neutral-200 flex items-center gap-1.5">
+                <i class="ph ph-check text-red-600 font-bold"></i> Output: LOA Validation & Deviation Verification
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Sustainability & Circular Economy Impacts -->
+        <section id="sustainability" class="space-y-6 pt-6 border-t border-neutral-200">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center text-white font-mono text-sm font-bold">04</span>
+            <h2 class="text-2xl font-bold text-neutral-950 tracking-tight">Sustainability & Circular Economy Impacts</h2>
+          </div>
+
+          <p class="text-neutral-700 leading-relaxed">
+            Adopting a point cloud to Revit workflow delivers notable environmental benefits for retrofit projects:
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-5 rounded-xl bg-neutral-50 border border-neutral-200 hover:border-neutral-300 transition">
+              <div class="w-10 h-10 rounded-lg bg-red-100/70 border border-red-200 flex items-center justify-center text-red-700 text-lg mb-3">
+                <i class="ph ph-leaf"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-950 mb-1.5">Embodied Carbon Conservation</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Retrofitting existing buildings avoids the heavy carbon expenditure tied to manufacturing new concrete and structural steel, maximizing the preservation of existing assets.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-neutral-50 border border-neutral-200 hover:border-neutral-300 transition">
+              <div class="w-10 h-10 rounded-lg bg-red-100/70 border border-red-200 flex items-center justify-center text-red-700 text-lg mb-3">
+                <i class="ph ph-thermometer-cold"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-950 mb-1.5">Energy Retrofit Accuracy</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                High-accuracy as-built models allow engineers to conduct reliable thermal load simulations, daylighting assessments, and targeted HVAC replacements.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-neutral-50 border border-neutral-200 hover:border-neutral-300 transition">
+              <div class="w-10 h-10 rounded-lg bg-red-100/70 border border-red-200 flex items-center justify-center text-red-700 text-lg mb-3">
+                <i class="ph ph-recycle"></i>
+              </div>
+              <h3 class="text-base font-bold text-neutral-950 mb-1.5">Reduced Construction Waste</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Precise dimensions allow off-site prefabrication for MEP skids and facade panels, significantly lowering material scrap and job-site waste.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Future Roadmap -->
+        <section id="future-roadmap" class="space-y-6 pt-6 border-t border-neutral-200">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center text-white font-mono text-sm font-bold">05</span>
+            <h2 class="text-2xl font-bold text-neutral-950 tracking-tight">Future Roadmap</h2>
+          </div>
+
+          <div class="space-y-3">
+            <!-- Roadmap 1 -->
+            <div class="flex gap-4 items-start p-4 rounded-xl bg-white border border-neutral-200 shadow-sm">
+              <div class="w-8 h-8 rounded-full bg-red-50 border border-red-200 flex items-center justify-center text-red-700 font-bold shrink-0 text-sm font-mono">
+                1
+              </div>
+              <div>
+                <h4 class="text-neutral-950 font-bold text-sm">Autonomous Robotic Reality Capture</h4>
+                <p class="text-xs text-neutral-600 mt-1 leading-relaxed">
+                  Autonomous rovers and indoor drones equipped with SLAM-enabled LiDAR will capture routine site updates, continuously syncing field progress with the Revit model.
+                </p>
+              </div>
+            </div>
+
+            <!-- Roadmap 2 -->
+            <div class="flex gap-4 items-start p-4 rounded-xl bg-white border border-neutral-200 shadow-sm">
+              <div class="w-8 h-8 rounded-full bg-red-50 border border-red-200 flex items-center justify-center text-red-700 font-bold shrink-0 text-sm font-mono">
+                2
+              </div>
+              <div>
+                <h4 class="text-neutral-950 font-bold text-sm">AI-Driven Instant Mesh-to-BIM Conversion</h4>
+                <p class="text-xs text-neutral-600 mt-1 leading-relaxed">
+                  Machine-learning tools will advance from basic edge detection to full generative family creation, reducing manual model generation times.
+                </p>
+              </div>
+            </div>
+
+            <!-- Roadmap 3 -->
+            <div class="flex gap-4 items-start p-4 rounded-xl bg-white border border-neutral-200 shadow-sm">
+              <div class="w-8 h-8 rounded-full bg-red-50 border border-red-200 flex items-center justify-center text-red-700 font-bold shrink-0 text-sm font-mono">
+                3
+              </div>
+              <div>
+                <h4 class="text-neutral-950 font-bold text-sm">Smart Digital Twins & Facility Operations</h4>
+                <p class="text-xs text-neutral-600 mt-1 leading-relaxed">
+                  As-built Revit models will serve as the geometric framework for live IoT sensor feeds, enabling condition-based predictive maintenance and automated facility management.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion" class="space-y-6 pt-6 border-t border-neutral-200">
+          <div class="p-6 sm:p-8 rounded-2xl bg-neutral-950 text-white border border-neutral-800 shadow-md">
+            
+            <div class="flex items-center gap-2 text-red-400 text-xs font-mono font-bold uppercase tracking-wider mb-2">
+              <i class="ph-fill ph-check-circle"></i> Strategic Takeaway
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-black text-white mb-3">
+              Conclusion
+            </h3>
+
+            <p class="text-neutral-300 text-sm sm:text-base leading-relaxed mb-6 font-normal">
+              Converting laser scans into parametric Revit models shifts building renovations from guesswork into a reliable, predictable process. By implementing professional Scan to BIM Services, owners, architects, and contractors can streamline as-built documentation, eliminate spatial clashes, and build a dependable data foundation that serves the structure throughout its operational life.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <a href="#introduction" class="px-5 py-2.5 rounded-lg border border-neutral-700 hover:border-neutral-500 text-neutral-300 hover:text-white font-medium text-xs transition flex items-center gap-2">
+                <i class="ph ph-arrow-up"></i> Back to Top
+              </a>
+            </div>
+
+          </div>
+        </section>
+
+      </article>
+    </div>
+  </main>
+
+  <!-- Footer (BSI / BIM SERVICES INDIA) -->
+  <footer class="mt-20 bg-black text-neutral-400 pt-16 pb-12 border-t border-neutral-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Top Section: Brand & Explore Services -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-12 border-b border-neutral-900">
+        
+        <!-- Brand Logo: BSI BIM SERVICES INDIA -->
+        <div class="lg:col-span-4 flex flex-col justify-start">
+          <div class="inline-block">
+            <!-- Outlined BSI Box -->
+            <div class="inline-flex items-center justify-center border-2 border-white px-3.5 py-1 rounded">
+              <span class="text-white text-2xl font-black italic tracking-tighter">BSI</span>
+            </div>
+            <!-- Red Subtitle -->
+            <div class="text-red-600 text-[11px] font-bold tracking-widest uppercase mt-2">
+              BIM SERVICES INDIA
+            </div>
+          </div>
+        </div>
+
+        <!-- Explore Services Section -->
+        <div class="lg:col-span-8">
+          <div class="inline-block mb-6">
+            <h4 class="text-white text-base font-extrabold uppercase tracking-wider pb-1.5 border-b-2 border-red-600">
+              EXPLORE SERVICES
+            </h4>
+          </div>
+
+          <!-- Services Grid with subtle dividers (non-clickable static text) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 text-xs">
+            <div class="space-y-4">
+              <div class="block pb-2.5 border-b border-neutral-900 text-neutral-400 cursor-default select-none">
+                Architectural BIM Services
+              </div>
+              <div class="block pb-2.5 border-b border-neutral-900 text-neutral-400 cursor-default select-none">
+                MEP BIM Services
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="block pb-2.5 border-b border-neutral-900 text-neutral-400 cursor-default select-none">
+                Structural BIM Services
+              </div>
+              <div class="block pb-2.5 border-b border-neutral-900 text-neutral-400 cursor-default select-none">
+                Scan to BIM Services
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Middle Section: Contact Details across regions (non-clickable static text) -->
+      <div class="py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-xs">
+        
+        <!-- USA / Canada -->
+        <div>
+          <span class="block text-white font-bold uppercase tracking-wider mb-1.5">USA/CANADA</span>
+          <span class="text-neutral-400 font-mono cursor-default select-none block">
+            +1 510 680 3390
+          </span>
+        </div>
+
+        <!-- UK -->
+        <div>
+          <span class="block text-white font-bold uppercase tracking-wider mb-1.5">UK</span>
+          <span class="text-neutral-400 font-mono cursor-default select-none block">
+            +44 33 3011 9045
+          </span>
+        </div>
+
+        <!-- Australia -->
+        <div>
+          <span class="block text-white font-bold uppercase tracking-wider mb-1.5">AUSTRALIA</span>
+          <span class="text-neutral-400 font-mono cursor-default select-none block">
+            +61 48 999 7117
+          </span>
+        </div>
+
+        <!-- E-Mail -->
+        <div>
+          <span class="block text-white font-bold uppercase tracking-wider mb-1.5">E-MAIL</span>
+          <span class="text-sky-400 break-all cursor-default select-none block">
+            services@bimservicesindia.com
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Bottom Circular Icons (non-clickable static badges) -->
+      <div class="pt-6 flex items-center justify-center gap-4">
+        <!-- Cloud Icon -->
+        <div class="w-9 h-9 rounded-full bg-white text-neutral-950 flex items-center justify-center shadow-sm text-base cursor-default select-none">
+          <i class="ph ph-cloud"></i>
+        </div>
+
+        <!-- Red Building / Office Icon -->
+        <div class="w-9 h-9 rounded-full bg-[#ef6161] text-white flex items-center justify-center shadow-sm text-base cursor-default select-none">
+          <i class="ph-fill ph-buildings"></i>
+        </div>
+
+        <!-- Chain Link / Portal Icon -->
+        <div class="w-9 h-9 rounded-full bg-white text-neutral-950 flex items-center justify-center shadow-sm text-base cursor-default select-none">
+          <i class="ph-bold ph-link"></i>
+        </div>
+
+        <!-- Identity / Contact Card Icon -->
+        <div class="w-9 h-9 rounded-full bg-white text-neutral-950 flex items-center justify-center shadow-sm text-base cursor-default select-none">
+          <i class="ph ph-identification-card"></i>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Custom Feedback Toast (No alert() used) -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-neutral-900 border border-neutral-800 text-white px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2 text-xs font-medium">
+      <i class="ph-fill ph-check-circle text-red-500 text-base"></i>
+      <span id="toast-message">Article link copied to clipboard!</span>
+    </div>
+  </div>
+
+  <script>
+    // Scroll progress bar indicator
+    window.addEventListener('scroll', function () {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) {
+        progressBar.style.width = scrolled + '%';
+      }
+    });
+
+    // Share link copy fallback safe mechanism
+    function copyCurrentURL() {
+      const dummy = document.createElement('input');
+      const text = window.location.href;
+      document.body.appendChild(dummy);
+      dummy.value = text;
+      dummy.select();
+      try {
+        document.execCommand('copy');
+        showToast("Article link copied to clipboard!");
+      } catch (err) {
+        showToast("Sharing link ready!");
+      }
+      document.body.removeChild(dummy);
+    }
+
+    // Toast notification handler
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      if (toast && toastMessage) {
+        toastMessage.textContent = message;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 2600);
+      }
+    }
+  </script>
+</body>
+</html>
