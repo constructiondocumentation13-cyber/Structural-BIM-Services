@@ -1,1 +1,636 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How BIM Coordination Eliminates Onsite Rework & Cuts Costs</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              black: '#09090b',
+              charcoal: '#18181b',
+              gray: '#27272a',
+              muted: '#71717a',
+              light: '#f4f4f5',
+              white: '#ffffff',
+              red: '#dc2626',
+              crimson: '#b91c1c',
+              lightRed: '#fef2f2',
+              accentRed: '#ef4444'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f4f4f5;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #dc2626;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #b91c1c;
+    }
 
+    /* Custom Selection Styling */
+    ::selection {
+      background-color: #dc2626;
+      color: #ffffff;
+    }
+
+    /* Reading Progress Bar */
+    #progress-bar {
+      transition: width 0.15s ease-out;
+    }
+  </style>
+</head>
+<body class="bg-brand-white text-brand-charcoal antialiased selection:bg-brand-red selection:text-white">
+
+  <!-- Top Reading Progress Indicator -->
+  <div class="fixed top-0 left-0 w-full h-1 bg-neutral-800 z-50">
+    <div id="progress-bar" class="h-full bg-brand-red w-0"></div>
+  </div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-black border-b-2 border-brand-red shadow-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <!-- Structural BIM Logo & Icon -->
+      <a href="#" class="flex items-center gap-3.5 group">
+        <!-- Isometric 3D Stacked Red Cubes Icon -->
+        <svg class="w-8 h-8 sm:w-9 sm:h-9 shrink-0 drop-shadow-sm transition-transform group-hover:scale-105" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Top Cube -->
+          <polygon points="50,10 68,20 50,30 32,20" fill="#f87171"/>
+          <polygon points="32,20 50,30 50,50 32,40" fill="#dc2626"/>
+          <polygon points="50,30 68,20 68,40 50,50" fill="#991b1b"/>
+
+          <!-- Bottom Left Cube -->
+          <polygon points="32,42 50,52 32,62 14,52" fill="#f87171"/>
+          <polygon points="14,52 32,62 32,82 14,72" fill="#dc2626"/>
+          <polygon points="32,62 50,52 50,72 32,82" fill="#991b1b"/>
+
+          <!-- Bottom Right Cube -->
+          <polygon points="68,42 86,52 68,62 50,52" fill="#f87171"/>
+          <polygon points="50,52 68,62 68,82 50,72" fill="#dc2626"/>
+          <polygon points="68,62 86,52 86,72 68,82" fill="#991b1b"/>
+        </svg>
+
+        <span class="text-xl sm:text-2xl font-black tracking-tight text-white uppercase select-none">
+          STRUCTURAL<span class="text-brand-red">BIM</span>
+        </span>
+      </a>
+
+      <!-- Right Navigation Links -->
+      <nav class="flex items-center gap-7 sm:gap-10">
+        <a href="#" class="text-sm sm:text-base font-bold text-white hover:text-neutral-300 tracking-wider transition-colors">
+          HOME
+        </a>
+        <div class="relative py-1">
+          <a href="#" class="text-sm sm:text-base font-bold text-brand-red tracking-wider transition-colors">
+            BLOG
+          </a>
+          <!-- Active Underline indicator -->
+          <span class="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-[3px] bg-brand-red rounded-full"></span>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+    <!-- Category & Metadata Header -->
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <span class="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-brand-red text-white rounded">
+        Preconstruction & BIM
+      </span>
+      <span class="text-xs font-medium text-brand-muted flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        6 Min Read
+      </span>
+    </div>
+
+    <!-- Main Title -->
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-black tracking-tight leading-[1.15] mb-6">
+      How <span class="text-brand-red">BIM Coordination</span> Eliminates Onsite Rework and Cuts Construction Costs
+    </h1>
+
+    <!-- Subtitle / Hook -->
+    <div class="p-4 sm:p-5 border-l-4 border-brand-red bg-brand-lightRed rounded-r-lg mb-8">
+      <p class="text-base sm:text-lg font-semibold text-brand-black">
+        The Shift from <span class="line-through text-brand-muted">"Reactive Fixes"</span> to <span class="text-brand-crimson underline decoration-2">"Preconstruction Simulation"</span>
+      </p>
+      <p class="mt-2 text-sm text-neutral-700 leading-relaxed">
+        Discovering design interferences in the virtual 3D environment solves issues for pennies at a desk, preventing thousands in field clashes, unbudgeted change orders, and catastrophic schedule slips.
+      </p>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-10">
+      <div class="p-4 rounded-xl border border-neutral-200 bg-white shadow-sm flex flex-col items-center text-center">
+        <span class="text-2xl sm:text-3xl font-black text-brand-red">Up to 80%</span>
+        <span class="text-xs text-brand-muted font-medium mt-1">Reduction in Field Clashes</span>
+      </div>
+      <div class="p-4 rounded-xl border border-neutral-200 bg-white shadow-sm flex flex-col items-center text-center">
+        <span class="text-2xl sm:text-3xl font-black text-brand-black">10 - 15%</span>
+        <span class="text-xs text-brand-muted font-medium mt-1">Saved on Overall Project Budget</span>
+      </div>
+      <div class="col-span-2 sm:col-span-1 p-4 rounded-xl border border-neutral-200 bg-brand-black text-white shadow-sm flex flex-col items-center text-center">
+        <span class="text-2xl sm:text-3xl font-black text-brand-accentRed">LOD 400</span>
+        <span class="text-xs text-neutral-300 font-medium mt-1">Fabrication Ready Precision</span>
+      </div>
+    </div>
+
+    <!-- Article Introduction Content -->
+    <section class="prose max-w-none text-neutral-800 leading-relaxed mb-10 text-base sm:text-lg">
+      <p class="mb-4">
+        For decades, the Architecture, Engineering, and Construction (AEC) industry operated under an expensive assumption: discrepancies in 2D drawings would simply be <em>"worked out in the field."</em> But on a modern job site, an unforeseen clash between an HVAC duct and a structural steel beam isn't just an inconvenience—it triggers change orders, schedule delays, material waste, and spiraling labor costs.
+      </p>
+      <p class="mb-4">
+        Leading general contractors, MEP consultants, and developers are shifting from reactive onsite troubleshooting to proactive preconstruction simulation. By integrating disciplines into a single constructible federated model, partnering with professional <strong>BIM Coordination Services</strong> serves as the digital proving ground where design errors are caught and solved months before a single shovel touches the dirt.
+      </p>
+      <p class="text-neutral-700 italic border-l-2 border-neutral-300 pl-4 py-1">
+        This article explores how professional BIM coordination and clash detection workflows eliminate onsite rework, safeguard profit margins, and deliver constructible, cost-effective projects.
+      </p>
+    </section>
+
+    <!-- Section 1: The Conflict Dilemma -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-8 h-8 rounded-full bg-brand-black text-white flex items-center justify-center font-bold text-sm border-2 border-brand-red">1</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-brand-black tracking-tight">The Conflict Dilemma: Why Onsite Discovery is a Financial Drain</h2>
+      </div>
+
+      <p class="text-neutral-700 mb-6 leading-relaxed">
+        In a fragmented 2D CAD or disconnected drafting workflow, trade contractors design in isolation. When plumbing lines cross high-voltage electrical trays, or gravity-fed drainage lines hit primary structural supports, the discovery happens during physical installation.
+      </p>
+
+      <div class="space-y-4">
+        <!-- Dilemma Item 1 -->
+        <div class="flex flex-col sm:flex-row gap-4 p-5 rounded-xl border border-neutral-200 bg-white hover:border-brand-red transition shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-red-100 text-brand-red flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-brand-black mb-1">Direct Rework Costs</h3>
+            <p class="text-sm text-neutral-600 leading-relaxed">Tearing down already-installed materials, re-fabricating customized components, and paying for redundant double-labor on site.</p>
+          </div>
+        </div>
+
+        <!-- Dilemma Item 2 -->
+        <div class="flex flex-col sm:flex-row gap-4 p-5 rounded-xl border border-neutral-200 bg-white hover:border-brand-red transition shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-red-100 text-brand-red flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-brand-black mb-1">Cascading Project Delays</h3>
+            <p class="text-sm text-neutral-600 leading-relaxed">One trade stalling installation forces subsequent trades to halt operations, causing domino-effect disruptions along the entire critical path.</p>
+          </div>
+        </div>
+
+        <!-- Dilemma Item 3 -->
+        <div class="flex flex-col sm:flex-row gap-4 p-5 rounded-xl border border-neutral-200 bg-white hover:border-brand-red transition shadow-sm">
+          <div class="w-10 h-10 rounded-lg bg-red-100 text-brand-red flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-brand-black mb-1">Unplanned Change Orders & Dispute Friction</h3>
+            <p class="text-sm text-neutral-600 leading-relaxed">Requests for Information (RFIs) pile up exponentially, leading to schedule disputes and strained relationships among owners, engineers, and general contractors.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Callout note -->
+      <div class="mt-6 p-4 rounded-lg bg-neutral-900 text-white flex items-start gap-3">
+        <svg class="w-5 h-5 text-brand-red mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+        <p class="text-xs sm:text-sm text-neutral-200 leading-relaxed">
+          <strong>The BIM Advantage:</strong> In integrated tools like <em>Autodesk Revit, Navisworks Manage, and Autodesk Construction Cloud</em>, interferences become instant digital warnings solved on screen for pennies rather than in the field for thousands of dollars.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 2: Core Pillars of BIM Coordination -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-8 h-8 rounded-full bg-brand-black text-white flex items-center justify-center font-bold text-sm border-2 border-brand-red">2</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-brand-black tracking-tight">The Core Pillars of BIM Coordination Services</h2>
+      </div>
+
+      <p class="text-neutral-700 mb-6 leading-relaxed">
+        Comprehensive BIM coordination integrates all engineering streams into a single source of truth. At its core, the process revolves around three primary disciplines:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Pillar A -->
+        <div class="rounded-xl border-t-4 border-t-brand-red border-x border-b border-neutral-200 bg-white p-5 flex flex-col justify-between shadow-sm">
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-brand-red mb-1">Pillar A</div>
+            <h3 class="text-lg font-bold text-brand-black mb-3">Architectural & Structural Integration</h3>
+            <div class="space-y-3 text-xs sm:text-sm text-neutral-600">
+              <p><strong class="text-brand-black">The Process:</strong> Validating architectural ceilings, walls, and partition layouts against structural steel, precast concrete, and foundation plans across LOD 300 to LOD 350/400.</p>
+              <p><strong class="text-brand-black">Benefit:</strong> Eliminates costly structural core drillings, wall sleeve re-locations, and floor penetration mismatches early in design.</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center gap-2 text-xs font-semibold text-brand-charcoal">
+            <span class="w-2 h-2 rounded-full bg-brand-red"></span> Framework Security
+          </div>
+        </div>
+
+        <!-- Pillar B -->
+        <div class="rounded-xl border-t-4 border-t-brand-black border-x border-b border-neutral-200 bg-white p-5 flex flex-col justify-between shadow-sm">
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-brand-black mb-1">Pillar B</div>
+            <h3 class="text-lg font-bold text-brand-black mb-3">MEP Coordination (HVAC, Elec, Plumb & FP)</h3>
+            <div class="space-y-3 text-xs sm:text-sm text-neutral-600">
+              <p><strong class="text-brand-black">The Process:</strong> Integrating large ductwork, cable trays, hydronic piping, domestic water lines, and fire sprinkler systems into a synchronized 3D model.</p>
+              <p><strong class="text-brand-black">Benefit:</strong> Ensures proper spatial allowances, maintenance clearances, and completely eliminates trade congestion in tight plenum zones.</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center gap-2 text-xs font-semibold text-brand-charcoal">
+            <span class="w-2 h-2 rounded-full bg-brand-black"></span> Resolving System Chaos
+          </div>
+        </div>
+
+        <!-- Pillar C -->
+        <div class="rounded-xl border-t-4 border-t-brand-red border-x border-b border-neutral-200 bg-white p-5 flex flex-col justify-between shadow-sm">
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-brand-red mb-1">Pillar C</div>
+            <h3 class="text-lg font-bold text-brand-black mb-3">Multidisciplinary Clash Detection</h3>
+            <div class="space-y-3 text-xs sm:text-sm text-neutral-600">
+              <p><strong class="text-brand-black">Hard Clashes:</strong> Physical intersections (e.g., gravity pipe passing straight through a structural beam).</p>
+              <p><strong class="text-brand-black">Soft / Clearance Clashes:</strong> Ensuring code-required accessibility, insulation clearance, and maintenance doors.</p>
+              <p><strong class="text-brand-black">Benefit:</strong> Generates clash resolution logs & ISO 19650 compliant matrix audit reports.</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center gap-2 text-xs font-semibold text-brand-charcoal">
+            <span class="w-2 h-2 rounded-full bg-brand-red"></span> Issue Verification
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Beyond Clash Detection Deliverables -->
+    <section class="mb-12 bg-neutral-50 rounded-2xl p-6 sm:p-8 border border-neutral-200">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-8 h-8 rounded-full bg-brand-black text-white flex items-center justify-center font-bold text-sm border-2 border-brand-red">3</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-brand-black tracking-tight">Beyond Clash Detection: Construction-Ready Deliverables</h2>
+      </div>
+
+      <p class="text-neutral-700 mb-6 leading-relaxed">
+        BIM coordination does not stop at clearing virtual interferences; it bridges the gap between engineering design and site installation through actionable, physical deliverables:
+      </p>
+
+      <div class="space-y-4">
+        <!-- Item 1 -->
+        <div class="bg-white p-4 rounded-lg border border-neutral-200 flex items-start gap-4">
+          <div class="w-8 h-8 rounded bg-brand-black text-brand-red flex items-center justify-center font-black shrink-0 text-sm">
+            01
+          </div>
+          <div>
+            <h3 class="font-bold text-brand-black text-base">Coordination Drawings & MEP Installation Documentation</h3>
+            <p class="text-sm text-neutral-600 mt-1">
+              Detailed drawings extracted directly from the federated model containing precise dimensions, elevation heights, hanger locations, sleeve placements, and assembly details. This provides installation crews with a clear, error-free roadmap.
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="bg-white p-4 rounded-lg border border-neutral-200 flex items-start gap-4">
+          <div class="w-8 h-8 rounded bg-brand-red text-white flex items-center justify-center font-black shrink-0 text-sm">
+            02
+          </div>
+          <div>
+            <h3 class="font-bold text-brand-black text-base">Fabrication-Ready Models (LOD 350 & LOD 400)</h3>
+            <p class="text-sm text-neutral-600 mt-1">
+              Upgrading models with manufacturer-specific component geometry and tolerance data, enabling off-site prefabrication and modular construction with zero surprises on-site.
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="bg-white p-4 rounded-lg border border-neutral-200 flex items-start gap-4">
+          <div class="w-8 h-8 rounded bg-brand-black text-brand-red flex items-center justify-center font-black shrink-0 text-sm">
+            03
+          </div>
+          <div>
+            <h3 class="font-bold text-brand-black text-base">Navisworks Federations & Issue Tracking</h3>
+            <p class="text-sm text-neutral-600 mt-1">
+              Supplying <code class="bg-neutral-100 text-brand-crimson font-mono px-1.5 py-0.5 rounded text-xs">.NWD / .NWC</code> clash audit files and cloud-synced issue reports (via BIM 360 / ACC) so that all project stakeholders remain aligned in real-time.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: The Business Case / Comparison Table -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-8 h-8 rounded-full bg-brand-black text-white flex items-center justify-center font-bold text-sm border-2 border-brand-red">4</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-brand-black tracking-tight">The Business Case: In-House vs Outsourced BIM Partner</h2>
+      </div>
+
+      <p class="text-neutral-700 mb-6 leading-relaxed">
+        Contractors and engineering firms often debate whether to coordinate models in-house or collaborate with an experienced BIM coordination company. The choice comes down to speed, specialized toolsets, and risk management.
+      </p>
+
+      <!-- Comparison Matrix Table -->
+      <div class="overflow-x-auto rounded-xl border border-neutral-200 shadow-sm">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-brand-black text-white border-b border-neutral-800">
+              <th class="p-4 text-xs sm:text-sm font-bold uppercase tracking-wider w-1/3">Evaluation Metric</th>
+              <th class="p-4 text-xs sm:text-sm font-bold uppercase tracking-wider w-1/3 text-neutral-400">In-House Coordination</th>
+              <th class="p-4 text-xs sm:text-sm font-bold uppercase tracking-wider w-1/3 text-brand-accentRed bg-neutral-900 border-l border-neutral-800">
+                Outsourced BIM Partner
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-200 text-xs sm:text-sm">
+            <!-- Row 1 -->
+            <tr class="hover:bg-neutral-50">
+              <td class="p-4 font-bold text-brand-black">Cost Structure & Overhead</td>
+              <td class="p-4 text-neutral-700">
+                <span class="inline-block px-2 py-0.5 rounded text-xs bg-red-50 text-brand-red font-semibold mb-1">High Overhead</span><br>
+                Expensive workstation setups, multi-software licensing (Revit, Navisworks, ACC), and year-round specialized coordinator salaries.
+              </td>
+              <td class="p-4 text-neutral-900 bg-red-50/30 border-l border-neutral-200 font-medium">
+                <span class="inline-block px-2 py-0.5 rounded text-xs bg-black text-white font-semibold mb-1">Flexible & Predictable</span><br>
+                Scalable project-based or time-and-materials engagement with no persistent overhead during slow project phases.
+              </td>
+            </tr>
+            <!-- Row 2 -->
+            <tr class="hover:bg-neutral-50">
+              <td class="p-4 font-bold text-brand-black">Team Capacity & Speed</td>
+              <td class="p-4 text-neutral-700">
+                <span class="inline-block px-2 py-0.5 rounded text-xs bg-red-50 text-brand-red font-semibold mb-1">Capacity Bottlenecks</span><br>
+                On-site engineers spend hours troubleshooting software glitches and resolving clashes rather than driving physical production.
+              </td>
+              <td class="p-4 text-neutral-900 bg-red-50/30 border-l border-neutral-200 font-medium">
+                <span class="inline-block px-2 py-0.5 rounded text-xs bg-black text-white font-semibold mb-1">Turnkey Scalability</span><br>
+                Rapidly scale up a team of qualified BIM coordinators on-demand to meet aggressive tender or submittal deadlines.
+              </td>
+            </tr>
+            <!-- Row 3 -->
+            <tr class="hover:bg-neutral-50">
+              <td class="p-4 font-bold text-brand-black">Domain Experience</td>
+              <td class="p-4 text-neutral-700">
+                <span class="inline-block px-2 py-0.5 rounded text-xs bg-red-50 text-brand-red font-semibold mb-1">Siloed Expertise</span><br>
+                Limited exposure to diverse project scenarios, leading to recurring coordination blind spots and slower troubleshooting.
+              </td>
+              <td class="p-4 text-neutral-900 bg-red-50/30 border-l border-neutral-200 font-medium">
+                <span class="inline-block px-2 py-0.5 rounded text-xs bg-black text-white font-semibold mb-1">Global Best Practices</span><br>
+                Deep domain experience across thousands of commercial, healthcare, residential, and complex industrial projects.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Actionable Takeaways Section -->
+    <section id="key-takeaways" class="mb-12 bg-brand-black text-white rounded-2xl p-6 sm:p-8">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="h-2 w-2 rounded-full bg-brand-red animate-pulse"></span>
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-red">Executive Guide</span>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-6">Actionable Takeaways for AEC Leaders & Contractors</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Takeaway 1 -->
+        <div class="bg-brand-charcoal p-5 rounded-xl border border-neutral-800 flex items-start gap-3">
+          <div class="w-6 h-6 rounded-full bg-brand-red text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-sm font-bold text-white mb-1">Establish Clear Protocols in the BEP</h3>
+            <p class="text-xs text-neutral-300 leading-relaxed">Define the coordination schedule, clearance tolerances, and required Level of Development (LOD 300 vs. LOD 350/400) in the BIM Execution Plan before modeling begins.</p>
+          </div>
+        </div>
+
+        <!-- Takeaway 2 -->
+        <div class="bg-brand-charcoal p-5 rounded-xl border border-neutral-800 flex items-start gap-3">
+          <div class="w-6 h-6 rounded-full bg-brand-red text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-sm font-bold text-white mb-1">Coordinate Before Pre-fabrication</h3>
+            <p class="text-xs text-neutral-300 leading-relaxed">Never cut ductwork or spool pipe based on uncoordinated design intent drawings. Mandate sign-off on fully coordinated MEP models first.</p>
+          </div>
+        </div>
+
+        <!-- Takeaway 3 -->
+        <div class="bg-brand-charcoal p-5 rounded-xl border border-neutral-800 flex items-start gap-3">
+          <div class="w-6 h-6 rounded-full bg-brand-red text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-sm font-bold text-white mb-1">Prioritize Soft Clashes Early</h3>
+            <p class="text-xs text-neutral-300 leading-relaxed">Equipment that fits on paper often fails on-site due to maintenance and code clearance requirements (e.g., NEC clearances for electrical panels).</p>
+          </div>
+        </div>
+
+        <!-- Takeaway 4 -->
+        <div class="bg-brand-charcoal p-5 rounded-xl border border-neutral-800 flex items-start gap-3">
+          <div class="w-6 h-6 rounded-full bg-brand-red text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</div>
+          <div>
+            <h3 class="text-sm font-bold text-white mb-1">Leverage Cloud Collaboration</h3>
+            <p class="text-xs text-neutral-300 leading-relaxed">Utilize centralized platforms like Autodesk Construction Cloud to track RFIs and model updates simultaneously across all engineering trades.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conclusion Section -->
+    <section class="border-t-2 border-neutral-200 pt-8 mb-12">
+      <h2 class="text-2xl font-bold text-brand-black mb-4">Conclusion: Transforming Coordination into Bottom-Line Profit</h2>
+      <p class="text-neutral-700 leading-relaxed text-base sm:text-lg mb-4">
+        In modern construction, profitability is won or lost in preconstruction. Waiting to solve design interferences on the job site is no longer a viable way to build.
+      </p>
+      <p class="text-neutral-700 leading-relaxed text-base sm:text-lg">
+        By leveraging expert <strong>BIM Coordination Services</strong>, general contractors, engineers, and developers transform complex design data into clash-free, constructible reality. Eliminating clashes in the virtual space ensures that when teams move to the field, projects are completed faster, safer, and strictly within budget.
+      </p>
+    </section>
+
+    <!-- Toast Notification for Interactions -->
+    <div id="toast" class="fixed bottom-6 right-6 hidden bg-brand-black text-white px-4 py-3 rounded-lg border-l-4 border-brand-red shadow-xl text-sm z-50">
+      <span id="toast-message">Message text</span>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black text-white pt-14 pb-10 border-t border-neutral-900 cursor-default">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Top Section: Brand & Explore Services -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 pb-10">
+        
+        <!-- Left: Logo & Company Name -->
+        <div class="lg:col-span-4 flex flex-col items-start select-none">
+          <div class="inline-flex items-center justify-center px-4 py-2 border-2 border-white rounded-lg">
+            <span class="text-2xl font-black italic tracking-wider text-white">BSI</span>
+          </div>
+          <span class="mt-4 text-xs font-extrabold uppercase tracking-widest text-brand-red">
+            BIM SERVICES INDIA
+          </span>
+        </div>
+
+        <!-- Right: Explore Services (Static / Non-clickable) -->
+        <div class="lg:col-span-8">
+          <div class="inline-block pb-1.5 border-b-2 border-brand-red mb-6">
+            <h3 class="text-sm font-black uppercase tracking-wider text-white select-none">
+              EXPLORE SERVICES
+            </h3>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 text-sm text-neutral-300">
+            <!-- Left Services Column -->
+            <div class="space-y-4">
+              <div class="block pb-2 border-b border-neutral-800 text-neutral-300">
+                Architectural BIM Services
+              </div>
+              <div class="block pb-2 border-b border-neutral-800 text-neutral-300">
+                MEP BIM Services
+              </div>
+            </div>
+
+            <!-- Right Services Column -->
+            <div class="space-y-4">
+              <div class="block pb-2 border-b border-neutral-800 text-neutral-300">
+                Structural BIM Services
+              </div>
+              <div class="block pb-2 border-b border-neutral-800 text-neutral-300">
+                Scan to BIM Services
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Thin Horizontal Divider -->
+      <div class="border-t border-neutral-800/80 my-8"></div>
+
+      <!-- Middle Section: International Contact Info (Static / Non-clickable) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs sm:text-sm">
+        <!-- USA / Canada -->
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider mb-1.5">USA/CANADA</h4>
+          <span class="text-neutral-300 tracking-wide select-text">
+            +1 510 680 3390
+          </span>
+        </div>
+
+        <!-- UK -->
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider mb-1.5">UK</h4>
+          <span class="text-neutral-300 tracking-wide select-text">
+            +44 33 3011 9045
+          </span>
+        </div>
+
+        <!-- Australia -->
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider mb-1.5">AUSTRALIA</h4>
+          <span class="text-neutral-300 tracking-wide select-text">
+            +61 48 999 7117
+          </span>
+        </div>
+
+        <!-- E-Mail -->
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider mb-1.5">E-MAIL</h4>
+          <span class="text-sky-400 break-all select-text">
+            services@bimservicesindia.com
+          </span>
+        </div>
+      </div>
+
+      <!-- Bottom Center Circular Icons (Static / Non-clickable) -->
+      <div class="mt-12 pt-4 flex items-center justify-center gap-4 select-none pointer-events-none">
+        <!-- Cloud / CDE Icon -->
+        <div class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-md">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+          </svg>
+        </div>
+
+        <!-- Buildings / Architecture Icon (Red Accent) -->
+        <div class="w-10 h-10 rounded-full bg-[#f87171] text-white flex items-center justify-center shadow-md">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2z"/>
+          </svg>
+        </div>
+
+        <!-- Portal / Link Icon -->
+        <div class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-md">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+          </svg>
+        </div>
+
+        <!-- Contact Card Icon -->
+        <div class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-md">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 11H5v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1zm3-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Interactive JavaScript logic -->
+  <script>
+    // 1. Reading Progress Bar calculation
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) {
+        progressBar.style.width = scrolled + '%';
+      }
+    });
+
+    // 2. Custom Toast Function (avoiding browser alert())
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // 3. Share / Copy Link handler using document.execCommand('copy')
+    function copyArticleLink() {
+      const dummyInput = document.createElement('input');
+      dummyInput.value = window.location.href;
+      document.body.appendChild(dummyInput);
+      dummyInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(dummyInput);
+
+      const btnText = document.getElementById('copy-btn-text');
+      if (btnText) {
+        btnText.textContent = 'Copied!';
+        setTimeout(() => {
+          btnText.textContent = 'Share Link';
+        }, 2500);
+      }
+      showToast('Article URL copied to clipboard!');
+    }
+  </script>
+</body>
+</html>
