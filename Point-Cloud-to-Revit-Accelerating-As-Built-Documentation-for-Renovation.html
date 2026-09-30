@@ -68,7 +68,7 @@
     <div id="progress-bar" class="h-full bg-gradient-to-r from-red-600 to-red-500 w-0 transition-all duration-150"></div>
   </div>
 
-  <!-- Top Navigation Bar (Structural BIM Brand Header) -->
+  <!-- Top Navigation Bar (Nexura Structural BIM Brand Header) -->
   <header class="sticky top-0 z-40 w-full bg-black border-b-2 border-red-600 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
@@ -105,9 +105,9 @@
           </g>
         </svg>
 
-        <!-- Brand Text: STRUCTURAL in white, BIM in red -->
+        <!-- Brand Text: Nexura Structural in white, BIM in red -->
         <div class="flex items-center text-xl sm:text-2xl font-black tracking-tight select-none">
-          <span class="text-white">STRUCTURAL</span><span class="text-red-600">BIM</span>
+          <span class="text-white">Nexura Structural</span><span class="text-red-600">BIM</span>
         </div>
       </a>
 
@@ -145,11 +145,10 @@
       <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs text-neutral-500 border-t border-neutral-200 pt-6 font-medium">
         <div class="flex items-center gap-2">
           <i class="ph ph-buildings text-red-600 text-base"></i>
-          <span>Industry: Architecture & BIM</span>
+          <span> Architecture & BIM</span>
         </div>
         <div class="flex items-center gap-2">
           <i class="ph ph-clock text-red-600 text-base"></i>
-          <span>7 Min Read</span>
         </div>
         <div class="flex items-center gap-2">
           <i class="ph ph-crosshair text-red-600 text-base"></i>
@@ -203,7 +202,7 @@
           <!-- Quote Callout -->
           <div class="my-6 p-5 sm:p-6 rounded-xl bg-neutral-50 border-l-4 border-red-600 border border-neutral-200">
             <p class="text-neutral-800 italic text-sm sm:text-base leading-relaxed font-serif">
-              "Converting high-definition laser scan data directly into parametric Revit models widely known as <strong class="text-red-700 font-sans not-italic font-semibold">Scan to BIM</strong> bridges the physical site with digital design. By collaborating with specialized providers like <a href="https://www.teslabimservices.com/scan-to-bim-services.php" target="_blank" rel="noopener noreferrer" class="font-sans not-italic font-bold text-neutral-950 hover:text-red-600 underline decoration-red-500 hover:decoration-red-600 transition">Tesla BIM Services</a>, project stakeholders can transform complex point cloud surveys into intelligent 3D models with high accuracy, delivering an authoritative single source of truth for the entire asset lifecycle."
+              "Converting high-definition laser scan data directly into parametric Revit models widely known as <strong class="text-red-700 font-sans not-italic font-semibold">Scan to BIM</strong> bridges the physical site with digital design. By collaborating with specialized providers like Nexura Structural BIM, project stakeholders can transform complex point cloud surveys into intelligent 3D models with high accuracy, delivering an authoritative single source of truth for the entire asset lifecycle."
             </p>
           </div>
         </section>
@@ -649,58 +648,38 @@
       </div>
 
     </div>
-  </footer>
+ <!-- Footer -->
+    <footer class="bg-black text-white pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 mb-16">
+                <div class="lg:w-1/3">
+                    <div class="mb-6 flex flex-col">
+                        <div class="flex items-center text-4xl font-black italic tracking-tighter">
+                            <span class="border-4 border-white px-1 mr-1">NSB</span>
+                        </div>
+                        <span class="text-red-600 font-bold text-sm uppercase mt-1 tracking-widest">Nexura Structural BIM</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mt-4">We provide information-rich BIM models that add value throughout the structural engineering lifecycle.</p>
+                </div>
+               <!-- Links -->
+                <div class="flex-1">
+                    <h3 class="text-2xl font-bold uppercase tracking-tight footer-header-underline">Services Overview</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 mt-4">
+                        <div class="py-2 border-b border-gray-900 text-gray-400 text-sm cursor-pointer hover:text-white transition">Architectural BIM Services</div>
+                        <div class="py-2 border-b border-gray-900 text-gray-400 text-sm cursor-pointer hover:text-white transition">Structural BIM Services</div>
+                        <div class="py-2 border-b border-gray-900 text-gray-400 text-sm cursor-pointer hover:text-white transition">MEP BIM Services</div>
+                        <div class="py-2 border-b border-gray-900 text-gray-400 text-sm cursor-pointer hover:text-white transition">Scan to BIM Services</div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-12 pb-16">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 text-sm text-gray-400">
+                </div>
+            </div>
+    </footer>
 
-  <!-- Custom Feedback Toast (No alert() used) -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-neutral-900 border border-neutral-800 text-white px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2 text-xs font-medium">
-      <i class="ph-fill ph-check-circle text-red-500 text-base"></i>
-      <span id="toast-message">Article link copied to clipboard!</span>
-    </div>
-  </div>
+</body>
+</html>
 
-  <script>
-    // Scroll progress bar indicator
-    window.addEventListener('scroll', function () {
-      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
-      const progressBar = document.getElementById('progress-bar');
-      if (progressBar) {
-        progressBar.style.width = scrolled + '%';
-      }
-    });
-
-    // Share link copy fallback safe mechanism
-    function copyCurrentURL() {
-      const dummy = document.createElement('input');
-      const text = window.location.href;
-      document.body.appendChild(dummy);
-      dummy.value = text;
-      dummy.select();
-      try {
-        document.execCommand('copy');
-        showToast("Article link copied to clipboard!");
-      } catch (err) {
-        showToast("Sharing link ready!");
-      }
-      document.body.removeChild(dummy);
-    }
-
-    // Toast notification handler
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      const toastMessage = document.getElementById('toast-message');
-      if (toast && toastMessage) {
-        toastMessage.textContent = message;
-        toast.classList.remove('translate-y-20', 'opacity-0');
-        toast.classList.add('translate-y-0', 'opacity-100');
-        setTimeout(() => {
-          toast.classList.remove('translate-y-0', 'opacity-100');
-          toast.classList.add('translate-y-20', 'opacity-0');
-        }, 2600);
-      }
-    }
-  </script>
 </body>
 </html>
